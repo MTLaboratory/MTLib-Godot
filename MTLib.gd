@@ -1,7 +1,7 @@
 extends Node
 ## Modern Tool Library for Godot 4.3.x
 
-const VERSION:StringName = &"0.4.4"; # MAJ.MIN.REV
+const VERSION: StringName = &"0.4.5"; # MAJ.MIN.REV
 
 func _ready() -> void:
 	print("MTLib v%s" % VERSION)
@@ -10,32 +10,32 @@ func _ready() -> void:
 func nodes_free(
 	array: Array[Node]
 ) -> void:
-	if array.is_empty(): return;
-	for node:Node in array:
-		if not is_instance_valid(node): continue;
+	if array.is_empty(): return ;
+	for node: Node in array:
+		if not is_instance_valid(node): continue ;
 		node.free();
-	return;
+	return ;
 
 ## Calls [code]queue_free[/code] on each of the [Node]'s children.
 ## @deprecated
 func node_free_children(
 	node: Node
 ) -> void:
-	if var_null_or_invalid(node): return;
-	for child:Node in node.get_children():
-		if var_null_or_invalid(child): continue;
+	if var_null_or_invalid(node): return ;
+	for child: Node in node.get_children():
+		if var_null_or_invalid(child): continue ;
 		child.queue_free();
-	return;
+	return ;
 
 ## Calls [code]queue_free[/code] on each of the [Node]'s children.
 func node_queue_free_children(
 	node: Node
 ) -> void:
-	if is_null_or_invalid(node): return;
-	for child:Node in node.get_children():
-		if is_null_or_invalid(child): continue;
+	if is_null_or_invalid(node): return ;
+	for child: Node in node.get_children():
+		if is_null_or_invalid(child): continue ;
 		child.queue_free();
-	return;
+	return ;
 
 ## Loops through and array of Nodes, and calls [code]queue_free[/code] on them.
 func nodes_queue_free(
@@ -122,21 +122,21 @@ func log_errors(
 func log_connections(
 	connections: Array[int]
 ) -> bool:
-	var error_indices:Array[int] = [];
-	var error_index:int = 0;
-	for connection_err:int in connections:
+	var error_indices: Array[int] = [];
+	var error_index: int = 0;
+	for connection_err: int in connections:
 		if connection_err:
 			error_indices.append(error_index);
 		error_index += 1;
-	var caller_inf:Dictionary = (get_stack()[1] as Dictionary);
-	var caller_file:String = str(caller_inf.get('source', '?'));
-	var caller_func:String = str(caller_inf.get('function', '?'));
-	var caller_line:int = int(str(caller_inf.get('line', -1)));
+	var caller_inf: Dictionary = (get_stack()[1] as Dictionary);
+	var caller_file: String = str(caller_inf.get('source', '?'));
+	var caller_func: String = str(caller_inf.get('function', '?'));
+	var caller_line: int = int(str(caller_inf.get('line', -1)));
 	if error_indices.is_empty():
-		printraw("%s connection(s) connected at: %s:%s:%s()\n"%\
+		printraw("%s connection(s) connected at: %s:%s:%s()\n" % \
 			[connections.size(), caller_file, caller_line, caller_func])
 		return true;
-	printraw("connections (#%s) failed at: %s:%s:%s\n"%\
+	printraw("connections (#%s) failed at: %s:%s:%s\n" % \
 		[str(error_indices), caller_file, caller_line, caller_func])
 	return false;
 
@@ -186,11 +186,11 @@ func outline_get_from_size(
 	centered: bool = false,
 ) -> PackedVector2Array:
 	if centered:
-		var h_x:float = (size.x *.5); # (/2) is *usually* slower.
-		var h_y:float = (size.y *.5);
-		return ([Vector2(-h_x, -h_y), Vector2(h_x, -h_y),\
+		var h_x: float = (size.x * .5); # (/2) is *usually* slower.
+		var h_y: float = (size.y * .5);
+		return ([Vector2(-h_x, -h_y), Vector2(h_x, -h_y), \
 			Vector2(h_x, h_y), Vector2(-h_x, h_y)]);
-	return ([Vector2.ZERO, Vector2(size.x, 0),\
+	return ([Vector2.ZERO, Vector2(size.x, 0), \
 		Vector2(size.x, size.y), Vector2(0, size.y)]);
 
 ## Returns a [SHA256] representation of the stringified version of the provided value.
@@ -220,8 +220,8 @@ func node_attach_timer(
 	auto_start: bool = true,
 ) -> Timer:
 	if MTLib.var_null_or_invalid(node): return null;
-	var timer_obj:Timer = Timer.new();
-	var _connected:bool = MTLib.log_connections([
+	var timer_obj: Timer = Timer.new();
+	var _connected: bool = MTLib.log_connections([
 		timer_obj.timeout.connect(funct),
 	])
 	timer_obj.autostart = auto_start;
@@ -330,12 +330,12 @@ func moving_towards(
 func dir_assert(
 	dir_path: StringName
 ) -> void:
-	var exists:bool = DirAccess.dir_exists_absolute(dir_path);
-	if exists: return;
-	var make_err:Error = DirAccess.make_dir_recursive_absolute(dir_path);
-	if not make_err: return;
-	print_debug("Failed to assert directory '%s'! (Error #%s)"%[dir_path, make_err])
-	return;
+	var exists: bool = DirAccess.dir_exists_absolute(dir_path);
+	if exists: return ;
+	var make_err: Error = DirAccess.make_dir_recursive_absolute(dir_path);
+	if not make_err: return ;
+	print_debug("Failed to assert directory '%s'! (Error #%s)" % [dir_path, make_err])
+	return ;
 
 ## Returns an Array of Resources from the specified path.
 ## @experimental
@@ -347,7 +347,7 @@ func dir_get_resources(dir_path: StringName) -> Array[Resource]:
 		if not (file.ends_with(".tres") or file.ends_with(".remap")):
 			continue ;
 		var f_path: String = ("" + dir_path + file);
-		## (godot/issues/76823 & (issues/66014 initial)) >:|
+		## (godot/issues/76823 & (issues/66014 initial)) SRSLY?!
 		if f_path.ends_with(".remap"):
 			f_path = f_path.trim_suffix(".remap");
 		var res: Resource = load(f_path);
@@ -366,34 +366,34 @@ class Random:
 	static func _static_init() -> void:
 		NG = RandomNumberGenerator.new();
 		NG.randomize();
-		return;
-	static var NG:RandomNumberGenerator;
+		return ;
+	static var NG: RandomNumberGenerator;
 	static func rand_bool() -> bool:
 		return (NG.randf_range(0., 1.) > .5);
-	static func rand_int(minimum:int = 0, maximum:int = 1) -> int:
+	static func rand_int(minimum: int = 0, maximum: int = 1) -> int:
 		return NG.randi_range(minimum, maximum);
-	static func rand_float(minimum:float = 0., maximum:float = 1.) -> float:
+	static func rand_float(minimum: float = 0., maximum: float = 1.) -> float:
 		return NG.randf_range(minimum, maximum);
-	static func rand_probability(probability:float = 50.) -> float:
+	static func rand_probability(probability: float = 50.) -> float:
 		return (rand_float(0., 100.) <= probability);
 	static func rand_color(
-		minimum:Color = Color.BLACK,
-		maximum:Color = Color.WHITE,
+		minimum: Color = Color.BLACK,
+		maximum: Color = Color.WHITE,
 	) -> Color:
-		var r:float = rand_float(minimum.r, maximum.r);
-		var g:float = rand_float(minimum.g, maximum.g);
-		var b:float = rand_float(minimum.b, maximum.b);
-		var a:float = rand_float(minimum.a, maximum.a);
+		var r: float = rand_float(minimum.r, maximum.r);
+		var g: float = rand_float(minimum.g, maximum.g);
+		var b: float = rand_float(minimum.b, maximum.b);
+		var a: float = rand_float(minimum.a, maximum.a);
 		return Color(r, g, b, a);
 	static func rand_vector2(
-		minimum:Vector2 = Vector2.ZERO,
-		maximum:Vector2 = Vector2.ONE,
+		minimum: Vector2 = Vector2.ZERO,
+		maximum: Vector2 = Vector2.ONE,
 	) -> Vector2:
 		return Vector2(rand_float(minimum.x, maximum.x),
 			rand_float(minimum.y, maximum.y));
-	static func rand_dict_key(dict:Dictionary) -> Variant:
+	static func rand_dict_key(dict: Dictionary) -> Variant:
 		if dict.is_empty(): return null;
 		return (dict.keys()[rand_int(0, dict.size())]);
-	static func rand_dict_value(dict:Dictionary) -> Variant:
+	static func rand_dict_value(dict: Dictionary) -> Variant:
 		if dict.is_empty(): return null;
 		return (dict.values()[rand_int(0, dict.size())]);
